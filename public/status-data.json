@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-02-07T13:44:43.884Z",
+  "sites": [
+    {
+      "id": "admin-srv",
+      "name": "Admin Service",
+      "url": "http://localhost:8080",
+      "description": "Core Admin Microservice",
+      "icon": "⚙️",
+      "category": "Microservice",
+      "createdAt": "2026-02-07T13:44:36.590Z",
+      "status": "outage",
+      "statusText": "Unreachable",
+      "responseTime": 49,
+      "lastChecked": "2026-02-07T13:44:43.881Z"
+    }
+  ]
+}
