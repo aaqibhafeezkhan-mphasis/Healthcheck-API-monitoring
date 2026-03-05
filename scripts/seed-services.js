@@ -5,7 +5,7 @@ const http = require('http');
 const services = [
     {
         serviceName: 'Admin Service',
-        healthUrl: 'https://localhost:8088/adminservice/api/health/ping',
+        healthUrl: 'http://localhost:8088/adminservice/api/health/ping',
         owner: 'Platform Team',
         criticality: 'HIGH',
         active: true,

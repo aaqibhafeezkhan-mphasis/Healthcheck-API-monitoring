@@ -5,162 +5,119 @@ import {
   XCircle,
   HelpCircle,
   Clock,
-  ShieldCheck,
-  ShieldAlert,
-  ShieldX,
-  Database,
-  Globe
 } from "lucide-react";
 
-const SystemStatus = ({ sites, source = "local" }) => {
+const SystemStatus = ({ sites }) => {
   const calculateOverallStatus = () => {
-    if (!sites || sites.length === 0) return "operational";
+    if (!sites || sites.length === 0) return "unknown";
 
-    if (sites.some(s => s.status === "outage")) return "outage";
-    if (sites.some(s => s.status === "degraded")) return "degraded";
-    return "operational";
+    const statusCounts = sites.reduce((counts, site) => {
+      const status = site.status ? site.status.toLowerCase() : 'unknown';
+      counts[status] = (counts[status] || 0) + 1;
+      return counts;
+    }, {});
+
+    if (statusCounts["outage"] > 0) {
+      return "outage";
+    } else if (statusCounts["degraded"] > 0) {
+      return "degraded";
+    } else if (statusCounts["unknown"] > 0 && statusCounts["operational"] === undefined) {
+      return "unknown";
+    } else {
+      return "operational";
+    }
   };
 
   const getStatusConfig = (status) => {
     switch (status) {
       case "operational":
         return {
-          title: "All Systems Nominal",
-          description: "Your infrastructure is performing at peak efficiency without any detected anomalies.",
-          icon: <ShieldCheck className="h-10 w-10 text-emerald-500" strokeWidth={1.5} />,
-          statusColor: "emerald",
-          accentColor: "#10b981",
+          title: "All Systems Operational",
+          description: "All sites are up and running normally.",
+          icon: <CheckCircle className="h-9 w-9 text-green-500" strokeWidth={2} />,
+          bgColor: "bg-green-50 dark:bg-green-900/20",
+          borderColor: "border-green-200 dark:border-green-800",
+          textColor: "text-green-800 dark:text-green-100",
         };
       case "degraded":
         return {
-          title: "Partial Performance Lag",
-          description: "We've detected latency spikes in some sub-systems. Engineering teams are investigating.",
-          icon: <ShieldAlert className="h-10 w-10 text-amber-500" strokeWidth={1.5} />,
-          statusColor: "amber",
-          accentColor: "#f59e0b",
+          title: "Degraded Performance",
+          description: "Some sites are experiencing performance issues.",
+          icon: <AlertTriangle className="h-9 w-9 text-yellow-500" strokeWidth={2} />,
+          bgColor: "bg-yellow-50 dark:bg-yellow-900/20",
+          borderColor: "border-yellow-200 dark:border-yellow-800",
+          textColor: "text-yellow-800 dark:text-yellow-100",
         };
       case "outage":
         return {
-          title: "Critical Service Failure",
-          description: "Major outage detected across core endpoints. Immediate remediation in progress.",
-          icon: <ShieldX className="h-10 w-10 text-rose-500" strokeWidth={1.5} />,
-          statusColor: "rose",
-          accentColor: "#ef4444",
+          title: "System Outage Detected",
+          description: "One or more sites are currently unavailable.",
+          icon: <XCircle className="h-9 w-9 text-red-500" strokeWidth={2} />,
+          bgColor: "bg-red-50 dark:bg-red-900/20",
+          borderColor: "border-red-200 dark:border-red-800",
+          textColor: "text-red-800 dark:text-red-100",
         };
       default:
         return {
-          title: "Synchronizing Data...",
-          description: "Connecting to secure nodes to fetch the latest infrastructure metrics.",
-          icon: <HelpCircle className="h-10 w-10 text-slate-500" strokeWidth={1.5} />,
-          statusColor: "slate",
-          accentColor: "#64748b",
+          title: "Status Unknown",
+          description: "Unable to determine system status / Waiting for data.",
+          icon: <HelpCircle className="h-9 w-9 text-gray-500" strokeWidth={2} />,
+          bgColor: "bg-gray-50 dark:bg-gray-800",
+          borderColor: "border-gray-200 dark:border-gray-700",
+          textColor: "text-gray-800 dark:text-gray-100",
         };
     }
   };
 
   const overallStatus = calculateOverallStatus();
-  const config = getStatusConfig(overallStatus);
+  const statusConfig = getStatusConfig(overallStatus);
 
   const calculateOperationalPercentage = () => {
     if (!sites || sites.length === 0) return 100;
-    const operationalCount = sites.filter(s => s.status === "operational").length;
+
+    const operationalCount = sites.filter(
+      (site) => site.status === "operational",
+    ).length;
     return Math.round((operationalCount / sites.length) * 100);
   };
 
-  const operationalPercentage = calculateOperationalPercentage();
-
   return (
-    <div className="premium-card relative group overflow-visible">
-      {}
-      <div
-        className="absolute -inset-1 rounded-[2rem] blur-2xl opacity-10 group-hover:opacity-20 transition-opacity duration-1000"
-        style={{ backgroundColor: config.accentColor }}
-      ></div>
-
-      <div className="relative flex flex-col lg:flex-row items-center justify-between gap-10">
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-8 text-center md:text-left flex-grow">
-          <div className="relative flex-shrink-0">
-            <div className="absolute inset-0 bg-current opacity-10 blur-xl rounded-full"></div>
-            <div className="relative p-6 bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-white/20 dark:border-white/5 transform group-hover:rotate-6 transition-transform duration-500">
-              {config.icon}
-            </div>
+    <div
+      className={`rounded-lg border ${statusConfig.borderColor} ${statusConfig.bgColor} p-4 sm:p-6 mb-4 sm:mb-6 shadow-sm transition-all duration-300 hover:shadow-md`}
+    >
+      <div className="flex flex-col md:flex-row md:items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center mb-4 sm:mb-6 md:mb-0">
+          <div className="p-2 sm:p-3 bg-white dark:bg-gray-700 rounded-xl shadow-md mb-3 sm:mb-0 sm:mr-5">
+            {statusConfig.icon}
           </div>
-
-          <div className="space-y-4 max-w-xl">
-            <div className="space-y-2">
-              <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">
-                {config.title}
-              </h2>
-              <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed text-lg italic">
-                {config.description}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-              <span className={`inline-flex items-center px-4 py-1.5 rounded-2xl text-[10px] font-black uppercase tracking-widest bg-${config.statusColor}-500/10 text-${config.statusColor}-500 border border-${config.statusColor}-500/20`}>
-                <span className={`status-pulse bg-${config.statusColor}-500 mr-2`}></span>
-                {overallStatus.toUpperCase()}
-              </span>
-
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-white/5 rounded-2xl border border-slate-200 dark:border-white/5">
-                {source === "spring-boot" ? (
-                  <Database className="w-3 h-3 text-indigo-500" />
-                ) : (
-                  <Globe className="w-3 h-3 text-emerald-500" />
-                )}
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  {source === "spring-boot" ? "Spring Boot Integrated" : "Local Data Nodes"}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                <Clock className="w-3 h-3" />
-                <span>Live Refresh Active</span>
-              </div>
+          <div>
+            <h2
+              className={`text-xl sm:text-2xl font-semibold ${statusConfig.textColor}`}
+            >
+              {statusConfig.title}
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              {statusConfig.description}
+            </p>
+            <div className="flex items-center text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2 sm:mt-3">
+              <Clock className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+              <span>Last checked: {new Date().toLocaleString()}</span>
             </div>
           </div>
         </div>
-
-        <div className="relative p-4">
-          <svg className="w-40 h-40 transform -rotate-90">
-            {}
-            <circle
-              cx="80"
-              cy="80"
-              r="70"
-              fill="transparent"
-              stroke="currentColor"
-              strokeWidth="12"
-              className="text-slate-100 dark:text-white/5"
-            />
-            {}
-            <circle
-              cx="80"
-              cy="80"
-              r="70"
-              fill="transparent"
-              stroke="url(#gradient)"
-              strokeWidth="12"
-              strokeDasharray={439.8}
-              strokeDashoffset={439.8 - (439.8 * operationalPercentage) / 100}
-              strokeLinecap="round"
-              className="transition-all duration-[2000ms] ease-out shadow-2xl"
-            />
-            <defs>
-              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor={config.accentColor} />
-                <stop offset="100%" stopColor="#8b5cf6" />
-              </linearGradient>
-            </defs>
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">
-              {operationalPercentage}%
-            </span>
-            <span className="text-[10px] uppercase font-black tracking-[0.2em] text-slate-400 mt-1">
-              Availability
-            </span>
-          </div>
+        <div className="bg-white dark:bg-gray-700 rounded-xl h-24 w-24 sm:h-28 sm:w-28 flex flex-col items-center justify-center shadow-md transform transition-transform hover:scale-105 relative overflow-hidden">
+          <div
+            className={`absolute inset-x-0 top-0 h-1 ${overallStatus === "operational" ? "bg-green-500" : overallStatus === "degraded" ? "bg-yellow-500" : overallStatus === "outage" ? "bg-red-500" : "bg-gray-500"}`}
+          ></div>
+          <span className="text-2xl sm:text-3xl font-bold text-blue-600 dark:text-blue-400">
+            {calculateOperationalPercentage()}%
+          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            Operational
+          </span>
+          <span className="text-[9px] sm:text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 sm:mt-1">
+            {sites.length} sites monitored
+          </span>
         </div>
       </div>
     </div>

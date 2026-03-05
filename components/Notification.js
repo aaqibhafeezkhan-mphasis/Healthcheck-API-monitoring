@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { XIcon } from '@heroicons/react/outline';
+import { X } from 'lucide-react';
 
 
 const Notification = ({
@@ -12,7 +12,7 @@ const Notification = ({
   const [isVisible, setIsVisible] = useState(true);
   const [isExiting, setIsExiting] = useState(false);
 
-  
+
   useEffect(() => {
     if (!duration) return;
 
@@ -23,10 +23,10 @@ const Notification = ({
     return () => clearTimeout(timer);
   }, [duration]);
 
-  
+
   const handleDismiss = () => {
     setIsExiting(true);
-    
+
     setTimeout(() => {
       setIsVisible(false);
       if (onDismiss) onDismiss();
@@ -35,7 +35,7 @@ const Notification = ({
 
   if (!isVisible) return null;
 
-  
+
   const getTypeStyles = () => {
     switch (type) {
       case 'success':
@@ -74,9 +74,8 @@ const Notification = ({
 
   return (
     <div
-      className={`fixed top-4 right-4 z-50 max-w-md transition-all duration-300 transform ${
-        isExiting ? 'opacity-0 translate-x-10' : 'opacity-100 translate-x-0'
-      }`}
+      className={`fixed top-4 right-4 z-50 max-w-md transition-all duration-300 transform ${isExiting ? 'opacity-0 translate-x-10' : 'opacity-100 translate-x-0'
+        }`}
     >
       <div
         className={`flex items-center p-4 rounded-lg shadow-md border ${typeStyles.bg} ${typeStyles.border}`}
@@ -96,8 +95,7 @@ const Notification = ({
           onClick={handleDismiss}
           className={`ml-4 ${typeStyles.text} hover:bg-opacity-20 hover:bg-gray-500 p-1 rounded-full focus:outline-none`}
         >
-          <span className="sr-only">Dismiss</span>
-          <XIcon className="h-5 w-5" />
+          <X className="h-5 w-5" />
         </button>
       </div>
     </div>
@@ -108,19 +106,19 @@ const Notification = ({
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
 
-  
+
   const addNotification = (notification) => {
     const id = Date.now();
     setNotifications(prev => [...prev, { ...notification, id }]);
     return id;
   };
 
-  
+
   const removeNotification = (id) => {
     setNotifications(prev => prev.filter(notification => notification.id !== id));
   };
 
-  
+
   const contextValue = {
     addNotification,
     removeNotification
@@ -144,8 +142,8 @@ export const NotificationProvider = ({ children }) => {
 
 
 export const NotificationContext = React.createContext({
-  addNotification: () => {},
-  removeNotification: () => {}
+  addNotification: () => { },
+  removeNotification: () => { }
 });
 
 

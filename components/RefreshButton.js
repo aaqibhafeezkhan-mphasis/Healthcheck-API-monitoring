@@ -1,47 +1,59 @@
 import React from "react";
-import { RefreshCcw, Clock, Zap } from "lucide-react";
+import { RefreshCw, Clock } from "lucide-react";
 
 const RefreshButton = ({ onRefresh, lastUpdated, isRefreshing }) => {
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+    try {
+      await onRefresh();
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
+  };
+
   const formatTime = (date) => {
-    if (!date) return "--:--";
+    if (!date) return "Never";
     try {
       return new Date(date).toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
       });
-    } catch (e) { return "--:--"; }
+    } catch (e) { return "Never"; }
   };
 
   return (
-    <div className="flex items-center gap-5">
-      <div className="hidden sm:flex flex-col items-end">
-        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 opacity-60">Last Data Sync</span>
-        <div className="flex items-center gap-2 text-xs font-black text-slate-900 dark:text-white">
-          {isRefreshing ? (
-            <span className="flex items-center gap-1.5 text-indigo-500">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-              </span>
-              Syncing...
-            </span>
-          ) : (
-            <>
-              <Zap className="w-3 h-3 text-indigo-500 fill-current" />
-              {formatTime(lastUpdated)}
-            </>
-          )}
-        </div>
+    <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+      <div className="flex flex-col items-end sm:items-start mr-2">
+        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Live Surveillance</span>
+        {lastUpdated && (
+          <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 flex items-center">
+            <Clock className="h-3 w-3 mr-1 text-indigo-500" />
+            <span>Last Sync: {formatTime(lastUpdated)}</span>
+          </span>
+        )}
       </div>
 
       <button
-        onClick={onRefresh}
+        onClick={handleRefresh}
         disabled={isRefreshing}
-        className={`relative p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:border-indigo-500/30 transition-all active:scale-90 shadow-xl shadow-slate-900/5 disabled:opacity-50 group overflow-hidden`}
+        className={`inline-flex items-center px-4 py-2 border border-transparent text-xs font-bold rounded-lg shadow-sm text-white transition-all duration-200 uppercase tracking-wider ${isRefreshing
+            ? "bg-indigo-400 cursor-not-allowed"
+            : "bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-indigo-500/20 active:scale-95"
+          }`}
+        aria-label="Refresh status data"
       >
-        <div className="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-        <RefreshCcw className={`relative z-10 w-5 h-5 ${isRefreshing ? 'animate-spin' : 'group-hover:rotate-180'} transition-transform duration-700`} />
+        {isRefreshing ? (
+          <>
+            <RefreshCw className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" />
+            Syncing...
+          </>
+        ) : (
+          <>
+            <RefreshCw className="-ml-1 mr-2 h-4 w-4" />
+            Sync Data
+          </>
+        )}
       </button>
     </div>
   );
