@@ -28,6 +28,20 @@ const Header = ({ toggleTheme, isDarkMode }) => {
               </p>
             </div>
           </Link>
+          <nav className="hidden md:flex items-center space-x-6">
+            <Link
+              href="/"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/sites"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
+              Sites
+            </Link>
+          </nav>
           <div className="flex items-center space-x-3">
             <button
               onClick={toggleTheme}

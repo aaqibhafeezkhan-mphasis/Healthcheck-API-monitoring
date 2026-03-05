@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Link from "next/link";
 import SystemStatus from "../components/SystemStatus";
 import SiteStatusCard from "../components/SiteStatusCard";
 import RefreshButton from "../components/RefreshButton";
@@ -186,9 +187,17 @@ export default function Home() {
                       className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 dark:text-blue-400 mr-2"
                       strokeWidth={2}
                     />
-                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
-                      Site Status
-                    </h2>
+                    <div className="flex items-baseline gap-2">
+                      <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
+                        Site Status
+                      </h2>
+                      <Link
+                        href="/sites"
+                        className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                      >
+                        (View All)
+                      </Link>
+                    </div>
                   </div>
                   <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3">
                     <RegisterServiceForm onServiceAdded={() => fetchData(true)} />
