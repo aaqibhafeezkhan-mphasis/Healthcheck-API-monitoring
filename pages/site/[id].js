@@ -110,7 +110,6 @@ export default function SiteDetail() {
             <>
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
                 <div className="flex items-center">
-                  <span className="text-3xl mr-3">{site.icon}</span>
                   <div>
                     <div className="flex items-center gap-3 flex-wrap">
                       <h1 className="text-2xl font-bold text-gray-900 dark:text-white">

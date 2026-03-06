@@ -9,7 +9,6 @@ const RegisterServiceForm = ({ onServiceAdded }) => {
         name: '',
         url: '',
         description: '',
-        icon: '🔗',
         category: 'API',
         owner: '',
         criticality: 'NORMAL'
@@ -25,13 +24,12 @@ const RegisterServiceForm = ({ onServiceAdded }) => {
                 owner: formData.owner,
                 criticality: formData.criticality,
                 category: formData.category,
-                icon: formData.icon,
                 active: true,
             });
 
             onServiceAdded(newService);
             setIsOpen(false);
-            setFormData({ name: '', url: '', description: '', icon: '🔗', category: 'API', owner: '', criticality: 'NORMAL' });
+            setFormData({ name: '', url: '', description: '', category: 'API', owner: '', criticality: 'NORMAL' });
         } catch (error) {
             console.error('Failed to register service:', error);
         } finally {
@@ -143,16 +141,7 @@ const RegisterServiceForm = ({ onServiceAdded }) => {
                                     </div>
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Icon (Emoji/String)</label>
-                                            <input
-                                                type="text"
-                                                className="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white bg-white border py-2 px-3 text-center"
-                                                placeholder="⚙️"
-                                                value={formData.icon}
-                                                onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                                            />
-                                        </div>
+
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Team / Owner</label>
                                             <input

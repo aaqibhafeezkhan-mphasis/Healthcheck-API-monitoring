@@ -8,7 +8,6 @@ const SiteStatusCard = ({ site }) => {
     name,
     description,
     url,
-    icon,
     status,
     statusText,
     lastChecked,
@@ -73,10 +72,7 @@ const SiteStatusCard = ({ site }) => {
           <div
             className={`p-2 rounded-lg bg-gray-100 dark:bg-gray-700 ${statusClasses.icon} mr-3 flex items-center justify-center text-xl`}
           >
-            {/* Fallback to Activity/Wifi if icon prop is plain text but we have strings often now. Just rendering icon works nicely if it's an emoji too. Since we use emojis for our icons from spring boot mapping, we'll render the emoji. */}
-            {typeof icon === 'string' && icon.length < 5 ? (
-              <span className="w-5 h-5 flex items-center justify-center text-[18px]">{icon}</span>
-            ) : status === "operational" ? (
+            {status === "operational" ? (
               <Activity className="h-5 w-5" strokeWidth={2.5} />
             ) : status === "degraded" ? (
               <Wifi className="h-5 w-5" strokeWidth={2.5} />
