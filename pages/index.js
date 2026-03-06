@@ -29,7 +29,6 @@ export default function Home() {
 
   const isMounted = useRef(false);
 
-  // Initialize dark mode preference
   useEffect(() => {
     setDarkMode(initializeDarkMode());
 
@@ -42,7 +41,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch site status data
   const fetchData = async (forceRefresh = false) => {
     if (refreshing) return;
 
@@ -77,7 +75,6 @@ export default function Home() {
     }
   };
 
-  // Handle dark mode toggle
   const handleToggleDarkMode = () => {
     toggleDarkMode(setDarkMode);
   };
@@ -100,19 +97,15 @@ export default function Home() {
       <main className="flex-grow py-4 sm:py-8 px-3 sm:px-4 md:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <div className="max-w-7xl mx-auto">
           {loading ? (
-            // Loading state
             <div className="flex justify-center items-center h-48 sm:h-64">
               <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-t-2 border-b-2 border-blue-500"></div>
             </div>
           ) : (
             <>
-              {/* System Status Overview */}
               <SystemStatus sites={sites} />
 
-              {/* System Metrics */}
               {metrics && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
-                  {/* Operational Percentage */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-3 sm:p-4 flex items-center">
                     <div className="bg-green-100 dark:bg-green-900/20 p-2 sm:p-3 rounded-full mr-3 sm:mr-4">
                       <CheckCircle
@@ -133,7 +126,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Average Response Time */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-3 sm:p-4 flex items-center">
                     <div className="bg-blue-100 dark:bg-blue-900/20 p-2 sm:p-3 rounded-full mr-3 sm:mr-4">
                       <Clock
@@ -154,7 +146,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Sites with Issues */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-3 sm:p-4 flex items-center">
                     <div className="bg-red-100 dark:bg-red-900/20 p-2 sm:p-3 rounded-full mr-3 sm:mr-4">
                       <Server
@@ -179,7 +170,6 @@ export default function Home() {
                 </div>
               )}
 
-              {/* Sites Status List */}
               <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
                   <div className="flex items-center mb-3 sm:mb-0">
