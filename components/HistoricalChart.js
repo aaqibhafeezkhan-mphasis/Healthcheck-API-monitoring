@@ -61,7 +61,7 @@ const HistoricalChart = ({ siteHistory, siteId, siteName }) => {
       const avgResponseTime = Math.round(totalResponseTime / dayPoints.length);
       
       const upCount = dayPoints.filter(p => p.status === 'operational').length;
-      const uptime = Math.round((upCount / dayPoints.length) * 100 * 10) / 10; // 1 decimal place
+      const uptime = Math.round((upCount / dayPoints.length) * 100 * 10) / 10;
 
       return {
         timestamp: dayPoints[0].timestamp,

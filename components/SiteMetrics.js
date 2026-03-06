@@ -1,5 +1,4 @@
-import React from 'react';
-import { CheckCircleIcon, ExclamationCircleIcon, XCircleIcon, ClockIcon } from 'lucide-react';
+import { CheckCircle, AlertCircle, XCircle, Clock } from 'lucide-react';
 
 const SiteMetrics = ({ site }) => {
   if (!site) return null;
@@ -10,25 +9,25 @@ const SiteMetrics = ({ site }) => {
     switch (status) {
       case 'operational':
         return {
-          icon: <CheckCircleIcon className="h-8 w-8 text-green-500" />,
+          icon: <CheckCircle className="h-8 w-8 text-green-500" />,
           text: 'Healthy',
           textColor: 'text-green-500'
         };
       case 'degraded':
         return {
-          icon: <ExclamationCircleIcon className="h-8 w-8 text-yellow-500" />,
+          icon: <AlertCircle className="h-8 w-8 text-yellow-500" />,
           text: 'Degraded',
           textColor: 'text-yellow-500'
         };
       case 'outage':
         return {
-          icon: <XCircleIcon className="h-8 w-8 text-red-500" />,
+          icon: <XCircle className="h-8 w-8 text-red-500" />,
           text: 'Outage',
           textColor: 'text-red-500'
         };
       default:
         return {
-          icon: <ClockIcon className="h-8 w-8 text-gray-500" />,
+          icon: <Clock className="h-8 w-8 text-gray-500" />,
           text: 'Unknown',
           textColor: 'text-gray-500'
         };
@@ -101,7 +100,7 @@ const SiteMetrics = ({ site }) => {
             <span className="text-gray-500 dark:text-gray-400 text-sm">Last Checked</span>
           </div>
           <div className="flex items-center">
-            <ClockIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+            <Clock className="h-5 w-5 text-gray-500 dark:text-gray-400" />
             <span className="ml-2 font-semibold text-gray-700 dark:text-gray-300">
               {formatTime(lastChecked)}
             </span>

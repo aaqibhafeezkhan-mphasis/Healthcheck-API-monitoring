@@ -7,8 +7,9 @@ import Footer from '../../components/Footer';
 import SiteMetrics from '../../components/SiteMetrics';
 import HistoricalChart from '../../components/HistoricalChart';
 import { initializeDarkMode, toggleDarkMode } from '../../lib/utils';
-import { getSpringBootServices, getSpringBootHistory, mapSpringBootToFrontend } from '../../lib/springBootApi';
-import { ArrowLeft } from 'lucide-react';
+import { getSpringBootServices, getSpringBootHistory, mapSpringBootToFrontend, deleteService } from '../../lib/springBootApi';
+import { ArrowLeft, Trash2 } from 'lucide-react';
+import EditServiceForm from '../../components/EditServiceForm';
 
 export default function SiteDetail() {
   const router = useRouter();
@@ -70,12 +71,28 @@ export default function SiteDetail() {
     fetchSiteData();
     isMounted.current = true;
 
-    const refreshInterval = setInterval(fetchSiteData, 30000);
+    const refreshInterval = setInterval(fetchSiteData, 600000);
     return () => clearInterval(refreshInterval);
   }, [id]);
 
   const handleToggleDarkMode = () => {
     toggleDarkMode(setDarkMode);
+  };
+
+  const handleDelete = async () => {
+    if (confirm('Are you sure you want to delete this monitored service?')) {
+      try {
+        await deleteService(id);
+        router.push('/');
+      } catch (err) {
+        console.error('Failed to delete:', err);
+        alert('Failed to delete service. Please try again later.');
+      }
+    }
+  };
+
+  const handleServiceUpdated = () => {
+    window.location.reload();
   };
 
   if (!id) return null;
@@ -91,11 +108,24 @@ export default function SiteDetail() {
 
       <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-6">
+          <div className="mb-6 flex justify-between items-center">
             <Link href="/" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium">
               <ArrowLeft className="h-4 w-4 mr-1.5" />
               Back to Status Dashboard
             </Link>
+            
+            {!loading && !error && site && (
+              <div className="flex gap-2">
+                <EditServiceForm site={site} onServiceUpdated={handleServiceUpdated} />
+                <button
+                  onClick={handleDelete}
+                  className="inline-flex items-center px-3 py-1.5 border border-red-600 text-xs font-medium rounded-lg text-red-600 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+                >
+                  <Trash2 className="-ml-1 mr-1.5 h-3.5 w-3.5" />
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
 
           {loading ? (

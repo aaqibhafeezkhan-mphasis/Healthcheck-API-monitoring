@@ -37,7 +37,7 @@ export default function Home() {
       isMounted.current = true;
     }
 
-    const interval = setInterval(fetchData, 30000);
+    const interval = setInterval(fetchData, 600000);
     return () => clearInterval(interval);
   }, []);
 

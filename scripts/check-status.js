@@ -1,9 +1,13 @@
 
 
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
-const https = require('https');
+import fs from 'fs';
+import path from 'path';
+import axios from 'axios';
+import https from 'https';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 const DATA_DIR = path.join(__dirname, '../data');

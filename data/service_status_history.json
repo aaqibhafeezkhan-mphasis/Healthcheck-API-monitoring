@@ -1,10 +1,9 @@
 [
   {
-    "serviceId": "admin-srv",
-    "serviceName": "Admin Service",
-    "status": "outage",
-    "statusText": "Unreachable",
-    "responseTime": 49,
-    "timestamp": "2026-02-07T13:44:43.881Z"
+    "serviceId": "svc1",
+    "status": "operational",
+    "statusText": "OK",
+    "responseTime": 120,
+    "timestamp": "2026-03-06T11:31:49.460Z"
   }
 ]
