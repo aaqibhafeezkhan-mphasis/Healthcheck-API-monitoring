@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, X, Globe, Type, Send, Server } from 'lucide-react';
+import { Plus, X, Globe, Type, Send, Server, Shield, Key, Lock, User, Link } from 'lucide-react';
 import { registerService } from '../lib/springBootApi';
 
 const RegisterServiceForm = ({ onServiceAdded }) => {
@@ -11,7 +11,16 @@ const RegisterServiceForm = ({ onServiceAdded }) => {
         description: '',
         category: 'API',
         owner: '',
-        criticality: 'NORMAL'
+        criticality: 'NORMAL',
+        authType: 'NONE',
+        keycloakReferenceId: '',
+        username: '',
+        password: '',
+        apiKey: '',
+        token: '',
+        tokenUrl: '',
+        clientId: '',
+        clientSecret: ''
     });
 
     const handleSubmit = async (e) => {
@@ -25,11 +34,24 @@ const RegisterServiceForm = ({ onServiceAdded }) => {
                 criticality: formData.criticality,
                 category: formData.category,
                 active: true,
+                authType: formData.authType,
+                keycloakReferenceId: formData.keycloakReferenceId,
+                username: formData.username,
+                password: formData.password,
+                apiKey: formData.apiKey,
+                token: formData.token,
+                tokenUrl: formData.tokenUrl,
+                clientId: formData.clientId,
+                clientSecret: formData.clientSecret
             });
 
             onServiceAdded(newService);
             setIsOpen(false);
-            setFormData({ name: '', url: '', description: '', category: 'API', owner: '', criticality: 'NORMAL' });
+            setFormData({ 
+                name: '', url: '', description: '', category: 'API', owner: '', criticality: 'NORMAL',
+                authType: 'NONE', keycloakReferenceId: '', username: '', password: '', 
+                apiKey: '', token: '', tokenUrl: '', clientId: '', clientSecret: ''
+            });
         } catch (error) {
             console.error('Failed to register service:', error);
         } finally {
@@ -57,7 +79,7 @@ const RegisterServiceForm = ({ onServiceAdded }) => {
 
                         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
+                        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl w-full">
                             <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4 border-b border-gray-200 dark:border-gray-700">
                                 <div className="sm:flex sm:items-start">
                                     <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/50 sm:mx-0 sm:h-10 sm:w-10">
@@ -75,7 +97,7 @@ const RegisterServiceForm = ({ onServiceAdded }) => {
                             </div>
 
                             <form onSubmit={handleSubmit}>
-                                <div className="px-4 py-5 sm:p-6 space-y-4">
+                                <div className="px-4 py-5 sm:p-6 space-y-4 max-h-[60vh] overflow-y-auto">
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Service Name</label>
@@ -141,7 +163,6 @@ const RegisterServiceForm = ({ onServiceAdded }) => {
                                     </div>
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Team / Owner</label>
                                             <input
@@ -152,7 +173,167 @@ const RegisterServiceForm = ({ onServiceAdded }) => {
                                                 onChange={(e) => setFormData({ ...formData, owner: e.target.value })}
                                             />
                                         </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Auth Type</label>
+                                            <div className="relative rounded-md shadow-sm">
+                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <Shield className="h-4 w-4 text-gray-400" />
+                                                </div>
+                                                <select
+                                                    className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white bg-white border py-2"
+                                                    value={formData.authType}
+                                                    onChange={(e) => setFormData({ ...formData, authType: e.target.value })}
+                                                >
+                                                    <option value="NONE">None</option>
+                                                    <option value="BASIC">Basic Auth</option>
+                                                    <option value="API_KEY">API Key</option>
+                                                    <option value="BEARER">Bearer Token</option>
+                                                    <option value="OAUTH2">OAuth 2.0</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    {formData.authType !== 'NONE' && (
+                                        <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                                            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Security & Keycloak Configuration</h4>
+                                            
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                                                <div className="sm:col-span-2">
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Keycloak Reference ID</label>
+                                                    <div className="relative rounded-md shadow-sm">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <Key className="h-4 w-4 text-gray-400" />
+                                                        </div>
+                                                        <input
+                                                            type="text"
+                                                            className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white bg-white border py-2"
+                                                            placeholder="Keycloak Client ID or User Reference"
+                                                            value={formData.keycloakReferenceId}
+                                                            onChange={(e) => setFormData({ ...formData, keycloakReferenceId: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {formData.authType === 'BASIC' && (
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Username</label>
+                                                        <div className="relative rounded-md shadow-sm">
+                                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                                <User className="h-4 w-4 text-gray-400" />
+                                                            </div>
+                                                            <input
+                                                                type="text"
+                                                                className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white bg-white border py-2"
+                                                                value={formData.username}
+                                                                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                                                        <div className="relative rounded-md shadow-sm">
+                                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                                <Lock className="h-4 w-4 text-gray-400" />
+                                                            </div>
+                                                            <input
+                                                                type="password"
+                                                                className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white bg-white border py-2"
+                                                                value={formData.password}
+                                                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {formData.authType === 'API_KEY' && (
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">API Key</label>
+                                                    <div className="relative rounded-md shadow-sm">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <Key className="h-4 w-4 text-gray-400" />
+                                                        </div>
+                                                        <input
+                                                            type="password"
+                                                            className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white bg-white border py-2"
+                                                            value={formData.apiKey}
+                                                            onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {formData.authType === 'BEARER' && (
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Static Token</label>
+                                                    <div className="relative rounded-md shadow-sm">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <Shield className="h-4 w-4 text-gray-400" />
+                                                        </div>
+                                                        <input
+                                                            type="password"
+                                                            className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white bg-white border py-2"
+                                                            value={formData.token}
+                                                            onChange={(e) => setFormData({ ...formData, token: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {formData.authType === 'OAUTH2' && (
+                                                <div className="space-y-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Token URL</label>
+                                                        <div className="relative rounded-md shadow-sm">
+                                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                                <Link className="h-4 w-4 text-gray-400" />
+                                                            </div>
+                                                            <input
+                                                                type="url"
+                                                                className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white bg-white border py-2"
+                                                                placeholder="https://keycloak.example.com/realms/myrealm/protocol/openid-connect/token"
+                                                                value={formData.tokenUrl}
+                                                                onChange={(e) => setFormData({ ...formData, tokenUrl: e.target.value })}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Client ID</label>
+                                                            <div className="relative rounded-md shadow-sm">
+                                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                                    <User className="h-4 w-4 text-gray-400" />
+                                                                </div>
+                                                                <input
+                                                                    type="text"
+                                                                    className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white bg-white border py-2"
+                                                                    value={formData.clientId}
+                                                                    onChange={(e) => setFormData({ ...formData, clientId: e.target.value })}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Client Secret</label>
+                                                            <div className="relative rounded-md shadow-sm">
+                                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                                    <Lock className="h-4 w-4 text-gray-400" />
+                                                                </div>
+                                                                <input
+                                                                    type="password"
+                                                                    className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white bg-white border py-2"
+                                                                    value={formData.clientSecret}
+                                                                    onChange={(e) => setFormData({ ...formData, clientSecret: e.target.value })}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-gray-200 dark:border-gray-700">
                                     <button

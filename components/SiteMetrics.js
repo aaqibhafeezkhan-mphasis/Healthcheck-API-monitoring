@@ -1,4 +1,4 @@
-import { CheckCircle, AlertCircle, XCircle, Clock } from 'lucide-react';
+import { CheckCircle, AlertCircle, XCircle, Clock, Shield } from 'lucide-react';
 
 const SiteMetrics = ({ site }) => {
   if (!site) return null;
@@ -92,6 +92,29 @@ const SiteMetrics = ({ site }) => {
           </div>
           <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
             {responseIndicator.text}
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:col-span-2">
+          <div className="flex items-center mb-2">
+            <Shield className="h-4 w-4 text-blue-500 mr-2" />
+            <span className="text-gray-500 dark:text-gray-400 text-sm">Authentication / Keycloak</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div>
+              <span className="text-gray-400 block">Auth Type</span>
+              <span className="font-semibold text-gray-700 dark:text-gray-300 capitalize">
+                {site.authType || 'None'}
+              </span>
+            </div>
+            {site.keycloakReferenceId && (
+              <div>
+                <span className="text-gray-400 block">Reference ID</span>
+                <span className="font-semibold text-gray-700 dark:text-gray-300">
+                  {site.keycloakReferenceId}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 

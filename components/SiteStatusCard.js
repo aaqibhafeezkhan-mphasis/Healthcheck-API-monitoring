@@ -1,8 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import { ExternalLink, BarChart2, Clock, Activity, Wifi } from "lucide-react";
+import { ExternalLink, BarChart2, Clock, Activity, Wifi, Shield } from "lucide-react";
+import EditServiceForm from "./EditServiceForm";
 
-const SiteStatusCard = ({ site }) => {
+const SiteStatusCard = ({ site, onServiceUpdated, onServiceDeleted }) => {
   const {
     id,
     name,
@@ -12,6 +13,7 @@ const SiteStatusCard = ({ site }) => {
     statusText,
     lastChecked,
     responseTime,
+    authType
   } = site;
 
   const getStatusClasses = (status) => {
@@ -89,14 +91,29 @@ const SiteStatusCard = ({ site }) => {
             </p>
           </div>
         </div>
-        <span
-          className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${statusClasses.badge}`}
-        >
-          <span
-            className={`w-2 h-2 rounded-full inline-block ${status === "operational" ? "bg-green-500" : status === "degraded" ? "bg-yellow-500" : "bg-red-500"}`}
-          ></span>
-          <span>{statusText}</span>
-        </span>
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center space-x-2">
+            {authType && authType !== 'NONE' && (
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800 flex items-center">
+                <Shield className="h-2.5 w-2.5 mr-1" />
+                {authType}
+              </span>
+            )}
+            <span
+              className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${statusClasses.badge}`}
+            >
+              <span
+                className={`w-2 h-2 rounded-full inline-block ${status === "operational" ? "bg-green-500" : status === "degraded" ? "bg-yellow-500" : "bg-red-500"}`}
+              ></span>
+              <span>{statusText}</span>
+            </span>
+          </div>
+          <EditServiceForm 
+            site={site} 
+            onServiceUpdated={onServiceUpdated} 
+            onServiceDeleted={onServiceDeleted} 
+          />
+        </div>
       </div>
 
       <div className="mt-4 mb-2">

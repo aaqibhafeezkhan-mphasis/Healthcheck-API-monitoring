@@ -205,6 +205,8 @@ export default function Home() {
                       <SiteStatusCard
                         key={site.id}
                         site={site}
+                        onServiceUpdated={() => fetchData()}
+                        onServiceDeleted={() => fetchData()}
                         className={
                           index % 2 === 0
                             ? "transform hover:-translate-y-1"

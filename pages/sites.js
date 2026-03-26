@@ -117,6 +117,8 @@ export default function Sites() {
                                         <SiteStatusCard
                                             key={site.id}
                                             site={site}
+                                            onServiceUpdated={() => fetchData()}
+                                            onServiceDeleted={() => fetchData()}
                                         />
                                     ))
                                 ) : (
